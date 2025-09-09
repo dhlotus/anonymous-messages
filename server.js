@@ -4,7 +4,6 @@ const { Server } = require("socket.io");
 const express = require("express");
 const session = require("express-session");
 const { chmod } = require("fs");
-const sql = require("mssql");
 
 const app = express();
 app.use(express.json());
@@ -12,20 +11,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // ================== SQL CONFIG ==================
-const config = {
-    user: "lotus",
-    password: "17112",
-    server: "localhost",
-    database: "anonymous_messages",
-    options: {
-        encrypt: false,
-        trustServerCertificate: true
-    }
-};
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./messages.db');
 
-sql.connect(config)
-    .then(() => console.log("✅ Kết nối SQL thành công!"))
-    .catch(err => console.error("❌ Lỗi SQL:", err));
+// Tạo bảng nếu chưa có
+db.run(`CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)`, (err) => {
+    if (err) {
+        console.error("❌ Lỗi khi tạo bảng:", err);
+    } else {
+        console.log("✅ Kết nối SQLite thành công và bảng đã sẵn sàng");
+    }
+});
 
 // ================== SESSION ==================
 app.use(session({
@@ -95,21 +95,27 @@ app.post("/send-message", async (req, res) => {
     }
 
     try {
-        // 💾 Lưu DB
-        let pool = await sql.connect(config);
-        await pool.request()
-            .input("sender_name", sql.NVarChar(100), senderName || "Ẩn danh")
-            .input("messages_content", sql.NVarChar(sql.MAX), messageContent)
-            .query("INSERT INTO messages(sender_name, messages_content) VALUES (@sender_name, @messages_content)");
+        db.run(
+            "INSERT INTO messages (content) VALUES (?)",
+            [messageContent],
+            function (err) {
+                if (err) {
+                    console.error("❌ Lỗi khi lưu tin nhắn:", err);
+                    return res.status(500).send("❌ Có lỗi xảy ra!");
+                }
 
-        // ⏰ Cập nhật thời điểm gửi cuối
-        lastSent[key] = now;
-        io.emit("newMessage", {
-            sender_name: senderName || "Ẩn danh",
-            messages_content: messageContent,
-            created_at: new Date()
-        });
-        res.send(`💌 Cảm ơn ${senderName || "Ẩn danh"}, mình đã nhận được tin nhắn của bạn!`);
+                // ⏰ Cập nhật thời điểm gửi cuối
+                lastSent[key] = now;
+
+                io.emit("newMessage", {
+                    sender_name: senderName || "Ẩn danh",
+                    messages_content: messageContent,
+                    created_at: new Date()
+                });
+
+                res.send(`💌 Cảm ơn ${senderName || "Ẩn danh"}, mình đã nhận được tin nhắn của bạn!`);
+            }
+        );
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Có lỗi xảy ra!");
@@ -145,11 +151,14 @@ app.get("/admin", requireLogin, (req, res) => {
 // API lấy danh sách tin nhắn (chỉ khi đã đăng nhập)
 app.get("/api/messages", requireLogin, async (req, res) => {
     try {
-        let pool = await sql.connect(config);
-        const result = await pool.request()
-            .query("SELECT id, sender_name, messages_content, created_at FROM messages ORDER BY id DESC");
+        db.all("SELECT * FROM messages ORDER BY id DESC", [], (err, rows) => {
+            if (err) {
+                console.error("❌ Lỗi khi lấy tin nhắn:", err);
+                return res.status(500).send("❌ Không thể tải tin nhắn!");
+            }
+            res.json(rows);
+        });
 
-        res.json(result.recordset);
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Không thể tải tin nhắn!");
@@ -160,11 +169,14 @@ app.get("/api/messages", requireLogin, async (req, res) => {
 app.delete("/api/messages/:id", async (req, res) => {
     const { id } = req.params;
     try {
-        let pool = await sql.connect(config);
-        await pool.request()
-            .input("id", sql.Int, id)
-            .query("DELETE FROM messages WHERE id = @id");
-        res.send("✅ Đã xóa tin nhắn!");
+        db.run("DELETE FROM messages WHERE id = ?", [id], function (err) {
+            if (err) {
+                console.error("❌ Lỗi khi xóa:", err);
+                return res.status(500).send("❌ Lỗi khi xóa tin nhắn!");
+            }
+            res.send("✅ Đã xóa tin nhắn!");
+        });
+
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Lỗi khi xóa tin nhắn!");
@@ -194,9 +206,4 @@ io.on("connection", (socket) => {
 
 server.listen(3000, () => {
     console.log("🚀 Server chạy tại http://localhost:3000");
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
 });
