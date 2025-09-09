@@ -1,0 +1,144 @@
+/* Reset & base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f4f4f7;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    padding: 1rem 2rem;
+    background: linear-gradient(90deg, #2c3e50, #3b4a5a);
+    color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #444;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background: url('avatar.jpg') center/cover no-repeat;
+    border-radius: 50%;
+    border: 2px solid #f0f0f0;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+header span {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #f0f0f0;
+    text-shadow: 0 0 4px #00000033;
+}
+
+/* Logout button */
+.btn-logout {
+    background-color: #5d5fef;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+.btn-logout:hover {
+    background-color: #4a4ce0;
+}
+
+/* Message container */
+main#messagesContainer {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Message card */
+.message-card {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    border: 1px solid #e0e0e0;
+}
+
+.message-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Người gửi */
+.sender {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* Thời gian */
+.time {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+}
+
+/* Nội dung */
+.content {
+    font-size: 0.95rem;
+    color: #34495e;
+    line-height: 1.5;
+    word-break: break-word;
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Nút xóa */
+.btn-delete {
+    align-self: flex-end;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+/* Delete button */
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}

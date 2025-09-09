@@ -1,0 +1,368 @@
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.card-glass {
+    background: rgba(25, 28, 38, 0.9);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    padding: 2.2rem 2rem;
+    max-width: 440px;
+    width: 100%;
+    animation: fadeIn 1.2s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+}
+
+.logo-bar img {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 2px solid #ff6b81;
+    object-fit: cover;
+    box-shadow: 0 0 12px rgba(255, 107, 129, 0.7);
+}
+
+.site-title {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.site-title b {
+    color: #f093fb;
+}
+
+.main-title {
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 0.6rem;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 12px #000;
+}
+
+.subtitle {
+    color: #bdbdbd;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1.4rem;
+    opacity: 0.9;
+}
+
+.form-label {
+    color: #f093fb;
+    font-weight: 600;
+}
+
+.form-control {
+    background: rgba(40, 42, 54, 0.92);
+    color: #fff !important;
+    /* ép chữ màu trắng */
+    border: 1.5px solid #232526;
+    border-radius: 0.9rem;
+    box-shadow: none;
+    font-size: 1.05rem;
+    transition: border 0.2s, background 0.2s;
+}
+
+.form-control:focus {
+    color: #fff !important;
+    /* giữ trắng khi gõ */
+    border: 1.5px solid #f093fb;
+    background: rgba(60, 62, 74, 0.98);
+}
+
+
+.form-control::placeholder {
+    color: #bdbdbd;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg, #ff6b81, #f093fb, #302b63);
+    background-size: 200% auto;
+    color: #fff;
+    font-weight: 700;
+    border: none;
+    border-radius: 0.9rem;
+    padding: 0.9rem 0;
+    font-size: 1.15rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(240, 87, 108, 0.3);
+    transition: 0.4s;
+}
+
+.btn-gradient:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(240, 87, 108, 0.5);
+}
+
+.success-message {
+    margin-top: 1.2rem;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #f093fb33, #302b6333);
+    border-radius: 0.8rem;
+    padding: 0.9rem;
+    width: 100%;
+    text-align: center;
+    animation: fadeIn 0.7s;
+    border: 1.5px solid #f093fb66;
+    display: none;
+}
+
+.social-links {
+    margin-top: 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+.social-icon {
+    padding: 0.5rem 1rem;
+    border-radius: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.social-icon.fb {
+    background: #1877f2;
+    color: #fff;
+}
+
+.social-icon.gh {
+    background: #333;
+    color: #fff;
+}
+
+.social-icon.tk {
+    background: #000;
+    color: #fff;
+}
+
+.social-icon.ig {
+    background: linear-gradient(45deg, #fd1d1d, #f56040, #f77737, #fcaf45, #ffdc80);
+    color: #fff;
+}
+
+.social-icon:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.social-icon.web {
+    background: linear-gradient(90deg, #302b63, #f093fb);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.8rem;
+    padding: 0.8rem 0;
+    width: 66%;
+    text-align: center;
+    margin-top: 0.4rem;
+    display: block;
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.social-icon.web:hover {
+    opacity: 0.9;
+    transform: scale(1.03);
+}
+
+.footer {
+    margin-top: 2.5rem;
+    color: #fff;
+    font-size: 0.95rem;
+    opacity: 0.85;
+    text-align: center;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer strong {
+    background: linear-gradient(90deg, #ff6b81, #f093fb, #302b63);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.footer-email {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    color: #f093fb;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-email:hover {
+    color: #ff6b81;
+    text-shadow: 0 0 8px rgba(255, 107, 129, 0.8);
+}
+
+
+/* ========================= */
+/* 📱 Giao diện đặc biệt trên mobile */
+/* ========================= */
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+        background: linear-gradient(160deg, #141e30, #243b55, #302b63);
+        background-size: 200% 200%;
+        animation: bgMove 12s ease infinite;
+        /* nền động */
+    }
+
+    @keyframes bgMove {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .card-glass {
+        border-radius: 1.2rem;
+        /* bo tròn góc trên */
+        margin-top: 16px;
+        max-width: 100%;
+        min-height: 90vh;
+        padding: 1.5rem 1rem;
+    }
+
+    /* Header */
+    .logo-bar {
+        flex-direction: column;
+        background: url(avatar.jpg) no-repeat center/cover;
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo-bar img {
+        width: 72px;
+        height: 72px;
+        border: 3px solid #fff;
+        display: none;
+
+    }
+
+    .site-title {
+        color: #fff;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+        padding-top: 140px;
+    }
+
+    .site-title b {
+        color: #f093fb;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+
+    /* Form */
+    .form-control {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+
+    .btn-gradient {
+        font-size: 1rem;
+        padding: 0.9rem 0;
+        border-radius: 0.8rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(240, 147, 251, 0.6);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(240, 147, 251, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(240, 147, 251, 0);
+        }
+    }
+
+    /* Mạng xã hội */
+    .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .social-icon {
+        flex: 1 1 calc(50% - 0.5rem);
+        /* 2 cái trên 1 hàng */
+        text-align: center;
+        font-size: 0.95rem;
+        padding: 0.8rem 0;
+    }
+
+    .social-icon.web {
+        width: 100%;
+        /* full width riêng */
+        margin-top: 0.5rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #302b63, #f093fb, #ff6b81);
+        animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+        0% {
+            box-shadow: 0 0 8px #f093fb;
+        }
+
+        100% {
+            box-shadow: 0 0 20px #ff6b81;
+        }
+    }
+
+    /* Footer */
+    .footer {
+        margin-top: 1.2rem;
+        font-size: 0.85rem;
+    }
+}
