@@ -66,7 +66,7 @@ app.post("/send-message", (req, res) => {
     const { senderName, messageContent } = req.body;
 
     // 🔒 chống spam
-    const ip = req.ip;
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     const now = Date.now();
     if (lastSent[ip] && now - lastSent[ip] < 35000) {
         const wait = Math.ceil((35000 - (now - lastSent[ip])) / 1000);
