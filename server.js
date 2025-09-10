@@ -49,61 +49,36 @@ app.get("/", (req, res) => {
 // Lưu thời điểm gửi gần nhất
 const lastSent = {};
 
-app.post("/send-message", async (req, res) => {
+app.post("/send-message", (req, res) => {
     const { senderName, messageContent } = req.body;
-    // Lưu vào database
-    const stmt = db.prepare('INSERT INTO messages (sender, content, created_at) VALUES (?, ?, datetime("now"))');
-    stmt.run(senderName, messageContent);
-    // 🔒 Chống spam theo IP hoặc tên
-    const ip = req.ip;
-    const key = ip;
-    const now = Date.now();
 
-    if (lastSent[key] && now - lastSent[key] < 35000) {
-        const wait = Math.ceil((35000 - (now - lastSent[key])) / 1000);
+    // 🔒 chống spam
+    const ip = req.ip;
+    const now = Date.now();
+    if (lastSent[ip] && now - lastSent[ip] < 35000) {
+        const wait = Math.ceil((35000 - (now - lastSent[ip])) / 1000);
         return res.status(429).send(`⏳ Đừng spam, chờ ${wait}s nữa nha!`);
     }
+    lastSent[ip] = now;
 
-    // 🚨 Danh sách từ khóa xấu
-    const bannedWords = [
-        "lồn", "cặc", "ngu", "đb", "dm", "đm", "clm", "cc",
-        "địt", "đĩ", "buồi", "bựa", "mẹ", "chó", "đéo",
-        "vcl", "vl", "đần", "cmm", "cml", "dcm", "vcl", "vkl",
-        "đm", "đm", "đm", "đm", "đm", "đm", "đm", "đm"
-    ];
-
-    // ✅ Hàm tạo regex nâng cao (bắt hoa/thường, ký tự chen giữa)
-    const escapeRegExp = s => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-    const buildFlexibleRegexes = (words) => {
-        const sep = "[^\\p{L}\\p{N}]*"; // cho phép ký tự chen giữa
-        return words.map(w => new RegExp(
-            w.split("").map(ch => escapeRegExp(ch)).join(sep),
-            "iu" // i = ignore case, u = unicode
-        ));
-    };
-    const bannedRegexes = buildFlexibleRegexes(bannedWords);
-
-    const isBadMessage = (msg) => {
-        const m = msg || "";
-        return bannedRegexes.some(re => re.test(m));
-    };
-
-    // ✅ Kiểm tra tin nhắn xấu
+    // 🚨 kiểm tra từ cấm
     if (isBadMessage(messageContent)) {
         return res.status(400).send("❌ Ối đừng nhập từ bậy bạ mò!");
     }
 
     try {
         db.prepare(`
-  INSERT INTO messages (content, sender, created_at)
-  VALUES (?, ?, CURRENT_TIMESTAMP)
-`).run(content, sender);
+          INSERT INTO messages (sender, content, created_at)
+          VALUES (?, ?, CURRENT_TIMESTAMP)
+        `).run(senderName, messageContent);
 
+        res.json({ message: "✅ Cảm ơn bạn đã gửi tin nhắn!" });
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Có lỗi xảy ra!");
     }
 });
+
 
 
 
