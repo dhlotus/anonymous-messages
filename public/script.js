@@ -16,10 +16,10 @@ document.getElementById('messageForm').addEventListener('submit', async function
             body: JSON.stringify({ senderName, messageContent })
         });
 
-        const result = await response.text();
+        const result = await response.json();  // 👈 parse JSON
 
         const successBox = document.getElementById('success');
-        successBox.innerHTML = result;
+        successBox.innerHTML = result.message; // 👈 chỉ lấy nội dung message
         successBox.style.display = 'block';
 
         this.reset();
@@ -33,5 +33,6 @@ document.getElementById('messageForm').addEventListener('submit', async function
         console.error(error);
         alert("⚠️ Không thể kết nối đến server!");
     }
+
 
 });

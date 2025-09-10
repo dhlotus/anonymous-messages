@@ -27,10 +27,10 @@
             let card = document.createElement("div");
             card.className = "message-card";
             card.innerHTML = `
-      <div class="sender">👤 ${msg.sender_name}</div>
-      <div class="time">🕒 ${new Date(msg.created_at).toLocaleString()}</div>
-      <div class="content">${msg.messages_content}</div>
-    `;
+  <div class="sender">👤 ${escapeHtml(msg.sender || "Ẩn danh")}</div>
+  <div class="time">🕒 ${formatDateFromSQL(msg.created_at)}</div>
+  <div class="content">${escapeHtml(msg.content)}</div>
+`;
             container.prepend(card); // thêm tin nhắn mới lên đầu
         });
         function escapeHtml(str) {
@@ -86,9 +86,9 @@
                 const container = document.getElementById("messagesContainer");
                 container.innerHTML = data.map(m => `
       <div class="message-card" data-id="${m.id}">
-        <div class="sender">👤 ${escapeHtml(m.sender_name)}</div>
+        <div class="sender">👤 ${escapeHtml(m.sender || "Ẩn danh")}</div>
         <div class="time">🕒 ${escapeHtml(formatDateFromSQL(m.created_at))}</div>
-        <div class="content">${escapeHtml(m.messages_content)}</div>
+        <div class="content">${escapeHtml(m.content)}</div>
         <button class="btn-delete" data-id="${m.id}">Xóa</button>
       </div>
     `).join("");

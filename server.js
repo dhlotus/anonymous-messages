@@ -19,7 +19,7 @@ db.prepare(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     content TEXT NOT NULL,
     sender TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT (datetime('now', 'localtime'))
   )
 `).run();
 
@@ -48,6 +48,19 @@ app.get("/", (req, res) => {
 
 // Lưu thời điểm gửi gần nhất
 const lastSent = {};
+// 🚨 Danh sách từ khóa xấu
+const bannedWords = [
+    "lồn", "cặc", "ngu", "đb", "dm", "đm", "clm", "cc",
+    "địt", "đĩ", "buồi", "bựa", "mẹ", "chó", "đéo",
+    "vcl", "vl", "đần", "cmm", "cml", "dcm", "vkl"
+];
+
+// ✅ Hàm kiểm tra tin nhắn xấu
+function isBadMessage(msg) {
+    if (!msg) return false;
+    const lower = msg.toLowerCase();
+    return bannedWords.some(word => lower.includes(word));
+}
 
 app.post("/send-message", (req, res) => {
     const { senderName, messageContent } = req.body;
@@ -68,11 +81,13 @@ app.post("/send-message", (req, res) => {
 
     try {
         db.prepare(`
-          INSERT INTO messages (sender, content, created_at)
-          VALUES (?, ?, CURRENT_TIMESTAMP)
-        `).run(senderName, messageContent);
+  INSERT INTO messages (sender, content, created_at)
+  VALUES (?, ?, datetime('now','localtime'))
+`).run(senderName, messageContent);
 
-        res.json({ message: "✅ Cảm ơn bạn đã gửi tin nhắn!" });
+
+        res.json({ message: `✅ Cảm ơn ${senderName || "bạn"}, mình đã nhận được tin nhắn của bạn rồi nha!` });
+
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Có lỗi xảy ra!");
@@ -84,7 +99,7 @@ app.post("/send-message", (req, res) => {
 
 // Trang login (GET form tĩnh từ public/login.html)
 app.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/public/message.html");
+    res.sendFile(__dirname + "/public/login.html");
 });
 
 // Xử lý login (POST)
@@ -141,7 +156,8 @@ app.get("/logout", (req, res) => {
             console.error("Lỗi khi hủy session:", err);
             return res.status(500).send("Không thể đăng xuất");
         }
-        res.redirect("/login.html"); // về trang login
+        res.redirect("/login");
+        // về trang login
     });
 });
 
@@ -154,6 +170,7 @@ io.on("connection", (socket) => {
     console.log("🔌 Client đã kết nối:", socket.id);
 });
 
-server.listen(3000, () => {
-    console.log("🚀 Server chạy tại http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`🚀 Server chạy tại http://localhost:${PORT}`);
 });
