@@ -50,7 +50,9 @@ const lastSent = {};
 
 app.post("/send-message", async (req, res) => {
     const { senderName, messageContent } = req.body;
-
+    // Lưu vào database
+    const stmt = db.prepare('INSERT INTO messages (sender, content, created_at) VALUES (?, ?, datetime("now"))');
+    stmt.run(senderName, messageContent);
     // 🔒 Chống spam theo IP hoặc tên
     const ip = req.ip;
     const key = ip;
