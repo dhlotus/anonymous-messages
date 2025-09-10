@@ -10,22 +10,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// ================== SQL CONFIG ==================
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./messages.db');
+const Database = require("better-sqlite3");
+const db = new Database("messages.db");
 
 // Tạo bảng nếu chưa có
-db.run(`CREATE TABLE IF NOT EXISTS messages (
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     content TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-)`, (err) => {
-    if (err) {
-        console.error("❌ Lỗi khi tạo bảng:", err);
-    } else {
-        console.log("✅ Kết nối SQLite thành công và bảng đã sẵn sàng");
-    }
-});
+  )
+`).run();
+
 
 // ================== SESSION ==================
 app.use(session({
@@ -95,27 +91,8 @@ app.post("/send-message", async (req, res) => {
     }
 
     try {
-        db.run(
-            "INSERT INTO messages (content) VALUES (?)",
-            [messageContent],
-            function (err) {
-                if (err) {
-                    console.error("❌ Lỗi khi lưu tin nhắn:", err);
-                    return res.status(500).send("❌ Có lỗi xảy ra!");
-                }
+        db.prepare("INSERT INTO messages (content) VALUES (?)").run(messageContent);
 
-                // ⏰ Cập nhật thời điểm gửi cuối
-                lastSent[key] = now;
-
-                io.emit("newMessage", {
-                    sender_name: senderName || "Ẩn danh",
-                    messages_content: messageContent,
-                    created_at: new Date()
-                });
-
-                res.send(`💌 Cảm ơn ${senderName || "Ẩn danh"}, mình đã nhận được tin nhắn của bạn!`);
-            }
-        );
     } catch (err) {
         console.error(err);
         res.status(500).send("❌ Có lỗi xảy ra!");
@@ -151,13 +128,9 @@ app.get("/admin", requireLogin, (req, res) => {
 // API lấy danh sách tin nhắn (chỉ khi đã đăng nhập)
 app.get("/api/messages", requireLogin, async (req, res) => {
     try {
-        db.all("SELECT * FROM messages ORDER BY id DESC", [], (err, rows) => {
-            if (err) {
-                console.error("❌ Lỗi khi lấy tin nhắn:", err);
-                return res.status(500).send("❌ Không thể tải tin nhắn!");
-            }
-            res.json(rows);
-        });
+        const rows = db.prepare("SELECT * FROM messages ORDER BY id DESC").all();
+        res.json(rows);
+
 
     } catch (err) {
         console.error(err);
@@ -169,13 +142,9 @@ app.get("/api/messages", requireLogin, async (req, res) => {
 app.delete("/api/messages/:id", async (req, res) => {
     const { id } = req.params;
     try {
-        db.run("DELETE FROM messages WHERE id = ?", [id], function (err) {
-            if (err) {
-                console.error("❌ Lỗi khi xóa:", err);
-                return res.status(500).send("❌ Lỗi khi xóa tin nhắn!");
-            }
-            res.send("✅ Đã xóa tin nhắn!");
-        });
+        db.prepare("DELETE FROM messages WHERE id = ?").run(id);
+        res.send("✅ Đã xóa tin nhắn!");
+
 
     } catch (err) {
         console.error(err);

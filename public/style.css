@@ -117,6 +117,21 @@ body {
     letter-spacing: 0.5px;
     box-shadow: 0 4px 15px rgba(240, 87, 108, 0.3);
     transition: 0.4s;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(240, 147, 251, 0.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(240, 147, 251, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(240, 147, 251, 0);
+    }
 }
 
 .btn-gradient:hover {
@@ -194,6 +209,17 @@ body {
     margin-top: 0.4rem;
     display: block;
     transition: transform 0.2s, opacity 0.3s;
+    animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 8px #f093fb;
+    }
+
+    100% {
+        box-shadow: 0 0 20px #ff6b81;
+    }
 }
 
 .social-icon.web:hover {
@@ -307,21 +333,6 @@ body {
         font-size: 1rem;
         padding: 0.9rem 0;
         border-radius: 0.8rem;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(240, 147, 251, 0.6);
-        }
-
-        70% {
-            box-shadow: 0 0 0 10px rgba(240, 147, 251, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(240, 147, 251, 0);
-        }
     }
 
     /* Mạng xã hội */
@@ -347,17 +358,6 @@ body {
         font-size: 1.05rem;
         font-weight: 700;
         background: linear-gradient(90deg, #302b63, #f093fb, #ff6b81);
-        animation: glow 3s infinite alternate;
-    }
-
-    @keyframes glow {
-        0% {
-            box-shadow: 0 0 8px #f093fb;
-        }
-
-        100% {
-            box-shadow: 0 0 20px #ff6b81;
-        }
     }
 
     /* Footer */
