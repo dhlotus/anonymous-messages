@@ -18,6 +18,7 @@ db.prepare(`
   CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     content TEXT NOT NULL,
+    sender TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )
 `).run();
