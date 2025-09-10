@@ -94,7 +94,10 @@ app.post("/send-message", async (req, res) => {
     }
 
     try {
-        db.prepare("INSERT INTO messages (content) VALUES (?)").run(messageContent);
+        db.prepare(`
+  INSERT INTO messages (content, sender, created_at)
+  VALUES (?, ?, CURRENT_TIMESTAMP)
+`).run(content, sender);
 
     } catch (err) {
         console.error(err);
