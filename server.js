@@ -81,9 +81,9 @@ app.post("/send-message", (req, res) => {
 
     try {
         db.prepare(`
-          INSERT INTO messages (sender, content, created_at)
-          VALUES (?, ?, CURRENT_TIMESTAMP)
-        `).run(senderName, messageContent);
+  INSERT INTO messages (sender, content, created_at)
+  VALUES (?, ?, datetime('now', '+7 hours'))
+`).run(senderName, messageContent);
 
         res.json({ message: `✅ Cảm ơn ${senderName || "bạn"} đã gửi tin nhắn nha!` });
 
