@@ -66,33 +66,33 @@ app.post("/send-message", (req, res) => {
     const { senderName, messageContent } = req.body;
 
     // 🔒 chống spam
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const ip = req.ip;
     const now = Date.now();
     if (lastSent[ip] && now - lastSent[ip] < 35000) {
         const wait = Math.ceil((35000 - (now - lastSent[ip])) / 1000);
-        return res.status(429).send(`⏳ Đừng spam, chờ ${wait}s nữa nha!`);
+        return res.status(429).json({ message: `⏳ Đừng spam, chờ ${wait}s nữa nha!` });
     }
     lastSent[ip] = now;
 
     // 🚨 kiểm tra từ cấm
     if (isBadMessage(messageContent)) {
-        return res.status(400).send("❌ Ối đừng nhập từ bậy bạ mò!");
+        return res.status(400).json({ message: "❌ Ối đừng nhập từ bậy bạ mò!" });
     }
 
     try {
         db.prepare(`
-  INSERT INTO messages (sender, content, created_at)
-  VALUES (?, ?, datetime('now','localtime'))
-`).run(senderName, messageContent);
+          INSERT INTO messages (sender, content, created_at)
+          VALUES (?, ?, CURRENT_TIMESTAMP)
+        `).run(senderName, messageContent);
 
-
-        res.json({ message: `✅ Cảm ơn ${senderName || "bạn"}, mình đã nhận được tin nhắn của bạn rồi nha!` });
+        res.json({ message: `✅ Cảm ơn ${senderName || "bạn"} đã gửi tin nhắn nha!` });
 
     } catch (err) {
         console.error(err);
-        res.status(500).send("❌ Có lỗi xảy ra!");
+        res.status(500).json({ message: "❌ Có lỗi xảy ra!" });
     }
 });
+
 
 
 
