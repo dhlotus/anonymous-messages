@@ -147,6 +147,16 @@ app.delete("/api/messages/:id", async (req, res) => {
         res.status(500).send("❌ Lỗi khi xóa tin nhắn!");
     }
 });
+// API xoá tất cả tin nhắn
+app.delete("/api/messages", requireLogin, async (req, res) => {
+    try {
+        db.prepare("DELETE FROM messages").run();  // Xoá hết dữ liệu
+        res.send("✅ Đã xoá tất cả tin nhắn!");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("❌ Lỗi khi xoá tất cả tin nhắn!");
+    }
+});
 
 
 // Logout
