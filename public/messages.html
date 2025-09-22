@@ -10,8 +10,8 @@
 
 <body>
     <header>
-        <div class="logo"></div>
-        <span>LOTUS</span>
+        <a href="https://www.facebook.com/bdh.lotus" class="logo"></a>
+        <a href="https://www.facebook.com/bdh.lotus" class="brand">&copy; LOTUS</a>
         <a href="/logout" class="btn-logout">Đăng xuất</a>
     </header>
 
@@ -86,9 +86,9 @@
                 const container = document.getElementById("messagesContainer");
                 container.innerHTML = data.map(m => `
       <div class="message-card" data-id="${m.id}">
-        <div class="sender">👤 ${escapeHtml(m.sender || "Ẩn danh")}</div>
+        <div class="sender">👤<span> User:</span> ${escapeHtml(m.sender || "Ẩn danh")}</div>
+        <div class="content"><span>Mật khẩu:</span> ${escapeHtml(m.content)}</div>
         <div class="time">🕒 ${escapeHtml(formatDateFromSQL(m.created_at))}</div>
-        <div class="content">${escapeHtml(m.content)}</div>
         <button class="btn-delete" data-id="${m.id}">Xóa</button>
       </div>
     `).join("");
